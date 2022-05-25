@@ -1,5 +1,3 @@
-
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +19,7 @@
         ktag('event', 'view_cart', {"event_category":"member_checkout","productSku":2147573973,"productName":"Understand Your Energy- Ebook","checkoutVersion":"next_gen","currencyCode":"AUD","transactionRevenue":"147.0","offerType":"single","siteId":108699,"siteName":"Empower Your Destiny","accountId":97351,"businessType":"coach","experience":"existing_physical","industry":"personal_development"}
 );
     </script>
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<!-- <script src="https://www.paypalobjects.com/api/checkout.js"></script> -->
 
 </head>
 <body>
@@ -195,6 +193,7 @@
 <div class="flex">
     <div class="flex-2">Set to Scale</div>
     <div class="flex-2 text-right">$<span id="finalAmount">1</span> AUD</div>
+    <input type="hidden" id="finalAmountInput" value="">
 </div>
 
 
@@ -207,71 +206,121 @@
   <div class="hide" bind-show="checkoutPaymentStep.paymentType == 'paypal' &amp;&amp; !freeForeverCouponApplied">
 
 
+    <!-- Paypal Code -->
+    
 
-      <div define="{ paypalButton: new App.PaypalButton(this, {&quot;analytics_options&quot;:{&quot;event_category&quot;:&quot;member_checkout&quot;,&quot;productSku&quot;:2147573973,&quot;productName&quot;:&quot;Understand Your Energy- Ebook&quot;,&quot;checkoutVersion&quot;:&quot;next_gen&quot;,&quot;currencyCode&quot;:&quot;AUD&quot;,&quot;transactionRevenue&quot;:&quot;147.0&quot;,&quot;offerType&quot;:&quot;single&quot;,&quot;siteId&quot;:108699,&quot;siteName&quot;:&quot;Empower Your Destiny&quot;,&quot;accountId&quot;:97351,&quot;businessType&quot;:&quot;coach&quot;,&quot;experience&quot;:&quot;existing_physical&quot;,&quot;industry&quot;:&quot;personal_development&quot;,&quot;paymentMethod&quot;:&quot;paypal&quot;},&quot;url&quot;:&quot;/offers/nXZDpFGg/paypal_payments&quot;,&quot;env&quot;:&quot;production&quot;}) }" context="paypalButton" id="paypal-button" style="" class="checkout-panel__btn checkout-panel__btn--paypal">
-        <input type="hidden" name="checkout_offer[paypal_details][payer_id]" data-paypal-payer-id="">
-        <input type="hidden" name="checkout_offer[paypal_details][payment_id]" data-paypal-payment-id="">
-        <input type="hidden" name="checkout_offer[paypal_details][token]" data-paypal-token="">
-<div id="zoid-paypal-button-af047b2225" class="paypal-button paypal-button-context-iframe paypal-button-label-checkout paypal-button-size-responsive paypal-button-layout-horizontal" data-paypal-smart-button-version="4.0.334" style="height: 83px;"><style>
-                    #zoid-paypal-button-af047b2225 {
-                        font-size: 0;
-                        width: 100%;
-                        overflow: hidden;
-                        min-width: 75px;
-                    }
+    <script src="https://www.paypal.com/sdk/js?client-id=Aa56zBojXkIuXpdv1ZJBKXKIZBtuxWuUMuEgea-naSCL2h2YKf395Yj-VnLvPUIa991TeQRoRhESrp0g&enable-funding=venmo&currency=AUD" data-sdk-integration-source="button-factory"></script>
+    
+    <div id="paypalScript-01" style="display: block;">
+        <div id="smart-button-container">
+            <div style="text-align: center;">
+              <div id="paypal-button-container"></div>
+            </div>
+          </div>
+        <script>
+          function initPayPalButton() {
+            paypal.Buttons({
+              style: {
+                shape: 'rect',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'paypal',
+                
+              },
+      
+              createOrder: function(data, actions) {
+                return actions.order.create({
+                  purchase_units: [{"amount":{"currency_code":"AUD","value":1}}]
+                });
+              },
+      
+              onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                  
+                  // Full available details
+                  console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+      
+                  // Show a success message within this page, e.g.
+                  const element = document.getElementById('paypal-button-container');
+                  element.innerHTML = '';
+                  element.innerHTML = '<h3>Thank you for your payment!</h3>';
+      
+                  // Or go to another URL:  actions.redirect('thank_you.html');
+                  
+                });
+              },
+      
+              onError: function(err) {
+                console.log(err);
+              }
+            }).render('#paypal-button-container');
+          }
+          initPayPalButton();
+        </script>    
+    </div>
 
-                    #zoid-paypal-button-af047b2225.paypal-button-size-responsive {
-                        text-align: center;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet {
-                        display: inline-block;
-                        min-width: 75px;
-                        max-width: 750px;
-                        position: relative;
-                    }
+    <div id="paypalScript-02" style="display: none;">
+        <div id="smart-button-container-2">
+            <div style="text-align: center;">
+              <div id="paypal-button-container-2"></div>
+            </div>
+          </div>
+        <script>
+          function initPayPalButton() {
+            paypal.Buttons({
+              style: {
+                shape: 'rect',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'paypal',
+                
+              },
+        
+              createOrder: function(data, actions) {
+                return actions.order.create({
+                  purchase_units: [{"amount":{"currency_code":"AUD","value":0.5}}]
+                });
+              },
+        
+              onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                  
+                  // Full available details
+                  console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+        
+                  // Show a success message within this page, e.g.
+                  const element = document.getElementById('paypal-button-container-2');
+                  element.innerHTML = '';
+                  element.innerHTML = '<h3>Thank you for your payment!</h3>';
+        
+                  // Or go to another URL:  actions.redirect('thank_you.html');
+                  
+                });
+              },
+        
+              onError: function(err) {
+                console.log(err);
+              }
+            }).render('#paypal-button-container-2');
+          }
+          initPayPalButton();
+        </script>
+    </div>
 
-                    #zoid-paypal-button-af047b2225.paypal-button-layout-vertical > .zoid-outlet {
-                        min-width: 75px;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet {
-                        width:  150px;
-                        height: 25px;
-                    }
+      
 
-                     #zoid-paypal-button-af047b2225.paypal-button-size-responsive > .zoid-outlet {
-                        width: 100%;
-                    }
+    <!-- End of Paypal Code -->
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet > iframe {
-                        min-width: 100%;
-                        max-width: 100%;
-                        width: 75px;
-                        height: 100%;
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet > iframe.zoid-component-frame {
-                        z-index: 100;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet > iframe.zoid-prerender-frame {
-                        transition: opacity .2s linear;
-                        z-index: 200;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet > iframe.zoid-visible {
-                        opacity: 1;
-                    }
 
-                    #zoid-paypal-button-af047b2225 > .zoid-outlet > iframe.zoid-invisible {
-                        opacity: 0;
-                        pointer-events: none;
-                    }
-                </style><div class="zoid-outlet" style="transition: all 0.5s ease-in-out 0.3s; height: 83px;"><iframe class="zoid-component-frame zoid-visible" frameborder="0" allowtransparency="true" name="xcomponent__ppbutton__4__pmrhk2leei5cendche4tmn3dhazdmirmej2gczzchirhaylzobqwyllcov2hi33oeiwcey3pnvyg63tfnz2faylsmvxhiir2pmrhezlgei5ce5dpoarh2lbcojsw4zdfojigc4tfnz2ceot3ejzgkzrchirhi33qej6syitqojxxa4zchj5se5dzobsseorcojqxoirmej3gc3dvmurdu6zcon2hs3dfei5hwittnf5gkir2ejzgk43qn5xhg2lwmurcyittnbqxazjchirhezldoqrcyitmmfrgk3bchirgg2dfmnvw65luej6syitwmfwgszdborsseot3ejpv65dzobsv6xzchirf6x3govxgg5djn5xf6xzcpuwcezlooyrduitqojxwi5ldoruw63rcfqrhaylznvsw45bchj5sex27or4xazk7l4rduis7l5thk3tdoruw63s7l4rh2lbcn5xec5lunbxxe2l2murdu6zcl5pxi6lqmvpv6ir2ejpv6ztvnzrxi2lpnzpv6it5fqrg63sdnruwg2zchj5sex27or4xazk7l4rduis7l5thk3tdoruw63s7l4rh2lbcmrxw2yljnyrduitxo53s4zlnobxxozlspfxxk4temvzxi2lopexgg33nfzqxkirmejzwk43tnfxw4skeei5ce5ljmrptmyzyge3dkm3ggrsv63leoe3g4zdngzxhiyjcfqrge5luorxw4u3fonzws33ojfcceorcovuwixzqgq4winzxg42dqn27nvshcntomrwtm3tumurcyitsmvxgizlsmvsee5luorxw44zchirhaylzobqwyirmejzxi33smftwkskeei5ce5ljmrptoyrwhbrdsmlcgazf63leoe3g4zdngzxhiyjcfqrg2zlumerdu635fqrgk3tbmjwgkttboruxmzkdnbswg23pov2ceotgmfwhgzjmejrwy2lfnz2ceot3puwce43povzggzjchirg2yloovqwyirmejyhezlgmv2gg2cmn5tws3rchjtgc3dtmuwce5lqmrqxizkdnruwk3tuinxw4ztjm52xeylunfxw4ir2orzhkzjmejrwqzldnnxxk5cvojuseotoovwgylbcmf2xi2cdn5sgkir2eircyitgovxgi2lom4rdu6zcmfwgy33xmvsceos3luwcezdjonqwy3dpo5swiir2lmrhmzlonvxsexjmejzgk3lfnvrgk4tfmqrduw25fqrhezlnmvwwezlsei5hwis7l52hs4dfl5pseorcl5pwm5lomn2gs33ol5pse7l5fqrgg33nnvuxiir2mzqwy43ffqrg63ssmvxgizlsei5hwis7l52hs4dfl5pseorcl5pwm5lomn2gs33ol5pse7jmejxw4rlsojxxeir2pmrf6x3upfygkx27ei5cex27mz2w4y3unfxw4x27ej6syitpnzbwc3tdmvwceot3ejpv65dzobsv6xzchirf6x3govxgg5djn5xf6xzcpuwce33okjsxg2l2murdu6zcl5pxi6lqmvpv6ir2ejpv6ztvnzrxi2lpnzpv6it5fqrgy33dmfwgkir2ejsw4x2vkmrcyitmn5tuyzlwmvwceorco5qxe3rcfqrgc53bnf2fa33qovyee4tjmrtwkir2pmrf6x3upfygkx27ei5cex27mz2w4y3unfxw4x27ej6syithmv2faylhmvkxe3bchj5sex27or4xazk7l4rduis7l5thk3tdoruw63s7l4rh2lbcorsxg5bchj5seyldoruw63rchirgg2dfmnvw65luej6syitvnfsceorcmftdanbxmizdemrveiwce5tfojzws33oei5cenbcpv6syitdnbuwyzcen5wwc2loei5ce2duoryhgorpf53xo5zoobqxs4dbnqxgg33neiwce2leei5cenjwmqywgoldmi4dgirmejsg63lbnfxceorcnb2hi4dthixs653xo4xgk3lqn53wk4tzn52xezdfon2gs3tzfzrw63jomf2se7i__" title="PayPal" scrolling="no" allowpaymentrequest="allowpaymentrequest" src="https://www.paypal.com/smart/button?style.size=responsive&amp;style.shape=rect&amp;style.label=checkout&amp;env=production&amp;domain=www.empoweryourdestiny.com.au&amp;sessionID=uid_6c81653f4e_mdq6ndm6nta&amp;buttonSessionID=uid_049d777487_mdq6ndm6nte&amp;renderedButtons=paypal&amp;storageID=uid_7b68b91b02_mdq6ndm6nta&amp;funding.disallowed=venmo&amp;locale.x=en_US&amp;logLevel=warn&amp;sdkMeta=eyJ1cmwiOiJodHRwczovL3d3dy5wYXlwYWxvYmplY3RzLmNvbS9hcGkvY2hlY2tvdXQuanMifQ&amp;uid=af047b2225&amp;version=4&amp;xcomponent=1" style="background-color: transparent;"></iframe></div></div></div>
+
+
+
+
 </div>
 
 </div>
@@ -490,11 +539,25 @@
 </script>
 
 <script>
+    var productAmount = 1;
+    $(function() {
+        $('#amount').val(productAmount);
+    });
     function ApplyCoupon() {
         if($('input[name="coupon"]').val() === "destiny50") {
-            $('#finalAmount').html('166.5');
+            $('#finalAmount').html(productAmount/2);
+            $('#finalAmountInput, #amount').val(productAmount/2);
+
+            $('#paypalScript-01').hide();
+            $('#paypalScript-02').show();
+
         } else {
-            $('#finalAmount').html('1');
+            $('#finalAmount').html(productAmount);
+            $('#finalAmountInput, #amount').val(productAmount);
+
+            $('#paypalScript-01').show();
+            $('#paypalScript-02').hide();
+
         }
     }
 
