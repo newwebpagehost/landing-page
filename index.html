@@ -126,16 +126,22 @@
         <div class="" define="{ checkoutPaymentStep: new App.CheckoutPaymentStep(this, false, null) }" bind-show="showPayment">
     <div class="" bind-show="checkoutPaymentStep.paymentType == null">
     <div class="payment-types">
-      <div class="payment-types-item">
+      <!-- <div class="payment-types-item">
         <label>
           <input type="radio" name="payment_type" value="stripe" bind="checkoutPaymentStep.paymentType" bind-event-change="checkoutPaymentStep.paymentChoiceChanged()" data-parsley-multiple="payment_type" data-parsley-id="6462">
             Card
         </label><ul class="parsley-errors-list" id="parsley-id-multiple-payment_type"></ul>
-      </div>
+      </div> -->
       <div class="payment-types-item">
         <label>
           <input type="radio" name="payment_type" value="paypal" bind="checkoutPaymentStep.paymentType" bind-event-change="checkoutPaymentStep.paymentChoiceChanged()" data-parsley-multiple="payment_type" data-parsley-id="6462">
             Paypal
+        </label>
+      </div>
+      <div class="payment-types-item">
+        <label id="Stripe2ClickFunction">
+          <input type="radio" name="payment_type" value="stripe-2" bind="checkoutPaymentStep.paymentType" bind-event-change="checkoutPaymentStep.paymentChoiceChanged()" data-parsley-multiple="payment_type" data-parsley-id="6462">
+            Stripe
         </label>
       </div>
     </div>
@@ -160,18 +166,21 @@
     </div>
 
 
-<input type="hidden" name="checkout_offer[payment_intent_id]" data-stripe-payment-intent="">
-<input type="hidden" name="checkout_offer[payment_method_id]" data-stripe-payment-method="">
+    <input type="hidden" name="checkout_offer[payment_intent_id]" data-stripe-payment-intent="">
+    <input type="hidden" name="checkout_offer[payment_method_id]" data-stripe-payment-method="">
 
-</div>
-
-
-    <div class="hide" bind-show="checkoutPaymentStep.paymentType != null">
-      <a class="form-link" bind-event-click="checkoutPaymentStep.changePaymentType()" href="#">Change payment method</a>
-</div></div>
+    </div>
 
 
-        <div class="form-group boolean optional checkout_offer_opt_in"><div class="checkbox"><input value="0" type="hidden" name="checkout_offer[opt_in]"><label class="boolean optional" for="checkout_offer_opt_in"><input class="boolean optional" type="checkbox" value="1" name="checkout_offer[opt_in]" id="checkout_offer_opt_in" data-parsley-multiple="checkout_offeropt_in" data-parsley-id="7993">Subscribe to our email list.</label><ul class="parsley-errors-list" id="parsley-id-multiple-checkout_offeropt_in"></ul></div></div>
+        <div class="hide" bind-show="checkoutPaymentStep.paymentType != null">
+        <a class="form-link" id="ChangePaymentMethod" bind-event-click="checkoutPaymentStep.changePaymentType()" href="#">Change payment method</a>
+        </div>
+    </div>
+
+
+    <div class="form-group boolean optional checkout_offer_opt_in">
+        <div class="checkbox">
+            <input value="0" type="hidden" name="checkout_offer[opt_in]"><label class="boolean optional" for="checkout_offer_opt_in"><input class="boolean optional" type="checkbox" value="1" name="checkout_offer[opt_in]" id="checkout_offer_opt_in" data-parsley-multiple="checkout_offeropt_in" data-parsley-id="7993">Subscribe to our email list.</label><ul class="parsley-errors-list" id="parsley-id-multiple-checkout_offeropt_in"></ul></div></div>
 
       
 
@@ -199,15 +208,71 @@
 
 
 <div class="checkout-panel__btn-wrapper" bind-show="typeof checkoutPaymentStep === 'undefined' || checkoutPaymentStep.paymentType != 'paypal' || freeForeverCouponApplied">
-
   <input type="submit" class="order-btn-style" name="commit" value="Complete my purchase" bind-event-click="submitCheckout({&quot;event_category&quot;:&quot;member_checkout&quot;,&quot;productSku&quot;:2147573973,&quot;productName&quot;:&quot;Understand Your Energy- Ebook&quot;,&quot;checkoutVersion&quot;:&quot;next_gen&quot;,&quot;currencyCode&quot;:&quot;AUD&quot;,&quot;transactionRevenue&quot;:&quot;147.0&quot;,&quot;offerType&quot;:&quot;single&quot;,&quot;siteId&quot;:108699,&quot;siteName&quot;:&quot;Empower Your Destiny&quot;,&quot;accountId&quot;:97351,&quot;businessType&quot;:&quot;coach&quot;,&quot;experience&quot;:&quot;existing_physical&quot;,&quot;industry&quot;:&quot;personal_development&quot;,&quot;paymentMethod&quot;:&quot;stripe&quot;})" class="btn btn-primary btn-block checkout-panel-btn" data-disable-with="Submitting..." aria-disabled="false">
 </div>
+  
 
-  <div class="hide" bind-show="checkoutPaymentStep.paymentType == 'paypal' &amp;&amp; !freeForeverCouponApplied">
-
-
-    <!-- Paypal Code -->
+<div class="hide" bind-show="checkoutPaymentStep.paymentType == 'stripe-2' &amp;&amp; !freeForeverCouponApplied">
+    <!-- Strip Code -->
     
+    
+    <script src="https://js.stripe.com/v3/"></script>
+
+
+    <button class="order-btn-style" id="StripeCheckoutButton" type="button" > Checkout</button>
+    <button class="order-btn-style" id="StripeCheckoutButtonCoupon" type="button" style="display: none;"> Checkout</button>
+
+    <div id="error-message"></div>
+
+    <script>
+    (function() {
+        var stripe = Stripe('pk_live_51IpNzMCOLkusPuaI3CHX9uFgDerhNvqKAIUQZ2iLHNZEHP6gBl7KgSioNBtTFkepBiklDyWtUH5qbNNybDQSQkRl005Q6raH5N');
+
+        var checkoutButton = document.getElementById('StripeCheckoutButton');
+        checkoutButton.addEventListener('click', function () {
+
+            stripe.redirectToCheckout({
+            lineItems: [{price: 'price_1L68EuCOLkusPuaIKw4qAbmv', quantity: 1}],
+            mode: 'payment',
+            successUrl: 'https://newwebpagehost.github.io/landing-page/thank-you.html',
+            cancelUrl: 'https://newwebpagehost.github.io/landing-page/',
+            })
+            .then(function (result) {
+            if (result.error) {
+                var displayError = document.getElementById('error-message');
+                displayError.textContent = result.error.message;
+            }
+            });
+        });
+
+
+        var checkoutButtonCoupon = document.getElementById('StripeCheckoutButtonCoupon');
+        checkoutButtonCoupon.addEventListener('click', function () {
+
+            stripe.redirectToCheckout({
+            lineItems: [{price: 'price_1L68EuCOLkusPuaIsLNRGEH9', quantity: 1}],
+            mode: 'payment',
+            successUrl: 'https://newwebpagehost.github.io/landing-page/thank-you.html',
+            cancelUrl: 'https://newwebpagehost.github.io/landing-page/',
+            })
+            .then(function (result) {
+            if (result.error) {
+                var displayError = document.getElementById('error-message');
+                displayError.textContent = result.error.message;
+            }
+            });
+        });
+
+
+    })();
+    </script>
+
+    <!-- End of Strip Code -->
+</div>
+
+
+<div class="hide" bind-show="checkoutPaymentStep.paymentType == 'paypal' &amp;&amp; !freeForeverCouponApplied">
+    <!-- Paypal Code -->
 
     <script src="https://www.paypal.com/sdk/js?client-id=Aa56zBojXkIuXpdv1ZJBKXKIZBtuxWuUMuEgea-naSCL2h2YKf395Yj-VnLvPUIa991TeQRoRhESrp0g&enable-funding=venmo&currency=AUD" data-sdk-integration-source="button-factory"></script>
     
@@ -308,19 +373,7 @@
         </script>
     </div>
 
-
-      
-
     <!-- End of Paypal Code -->
-
-
-
-
-
-
-
-
-
 </div>
 
 </div>
@@ -542,6 +595,14 @@
     var productAmount = 1;
     $(function() {
         $('#amount').val(productAmount);
+        
+
+        $('#Stripe2ClickFunction').click( function(){
+            $('.checkout-panel__btn-wrapper').addClass('hide');
+        });
+        $('#ChangePaymentMethod').click( function(){
+            $('.checkout-panel__btn-wrapper').removeClass('hide');
+        });
     });
     function ApplyCoupon() {
         if($('input[name="coupon"]').val() === "destiny50") {
@@ -551,6 +612,9 @@
             $('#paypalScript-01').hide();
             $('#paypalScript-02').show();
 
+
+            $('#StripeCheckoutButton').hide();
+            $('#StripeCheckoutButtonCoupon').show();
         } else {
             $('#finalAmount').html(productAmount);
             $('#finalAmountInput, #amount').val(productAmount);
@@ -558,6 +622,8 @@
             $('#paypalScript-01').show();
             $('#paypalScript-02').hide();
 
+            $('#StripeCheckoutButton').show();
+            $('#StripeCheckoutButtonCoupon').hide();
         }
     }
 
@@ -605,5 +671,9 @@
     })();
     
     </script>
+
+    <style>
+
+    </style>
 </body>
 </html>
