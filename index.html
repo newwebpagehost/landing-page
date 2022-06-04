@@ -226,6 +226,9 @@
 
     <script>
     (function() {
+
+        YOUR_DOMAIN = 'https://newwebpagehost.github.io/landing-page/';
+
         var stripe = Stripe('pk_live_51IpNzMCOLkusPuaI3CHX9uFgDerhNvqKAIUQZ2iLHNZEHP6gBl7KgSioNBtTFkepBiklDyWtUH5qbNNybDQSQkRl005Q6raH5N');
 
         var checkoutButton = document.getElementById('StripeCheckoutButton');
@@ -234,8 +237,8 @@
             stripe.redirectToCheckout({
             lineItems: [{price: 'price_1L68EuCOLkusPuaIKw4qAbmv', quantity: 1}],
             mode: 'payment',
-            successUrl: 'https://newwebpagehost.github.io/landing-page/thank-you.html',
-            cancelUrl: 'https://newwebpagehost.github.io/landing-page/',
+            successUrl: YOUR_DOMAIN,
+            cancelUrl: YOUR_DOMAIN + '/thank-you.html',
             })
             .then(function (result) {
             if (result.error) {
@@ -252,8 +255,8 @@
             stripe.redirectToCheckout({
             lineItems: [{price: 'price_1L68EuCOLkusPuaIsLNRGEH9', quantity: 1}],
             mode: 'payment',
-            successUrl: 'https://newwebpagehost.github.io/landing-page/thank-you.html',
-            cancelUrl: 'https://newwebpagehost.github.io/landing-page/',
+            successUrl: YOUR_DOMAIN,
+            cancelUrl: YOUR_DOMAIN + '/thank-you.html',
             })
             .then(function (result) {
             if (result.error) {
